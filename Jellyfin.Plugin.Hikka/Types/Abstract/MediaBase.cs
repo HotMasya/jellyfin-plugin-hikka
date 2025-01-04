@@ -4,7 +4,7 @@ using MediaBrowser.Model.Providers;
 
 namespace Jellyfin.Plugin.Hikka.Types.Abstract;
 
-public abstract class MediaBase
+public abstract class MediaBase : MediaWithTitle
 {
     public string? SynopsisEn { get; set; }
 
@@ -19,10 +19,6 @@ public abstract class MediaBase
     public long? EndDate { get; set; }
 
     public long Updated { get; set; }
-
-    public string? TitleUa { get; set; }
-
-    public string? TitleEn { get; set; }
 
     public string? Image { get; set; }
 
@@ -46,7 +42,7 @@ public abstract class MediaBase
 
     public bool Nsfw { get; set; }
 
-    protected static DateTime UnixTimeToDateTime(long unixTime)
+    public static DateTime UnixTimeToDateTime(long unixTime)
     {
         DateTimeOffset dateTimeOffset = DateTimeOffset.FromUnixTimeSeconds(unixTime);
         return dateTimeOffset.UtcDateTime;
@@ -77,41 +73,6 @@ public abstract class MediaBase
             SearchProviderName = providerName,
             ProviderIds = new Dictionary<string, string> { { providerName, Slug } }
         };
-    }
-
-    public string? GetPreferredTitle()
-    {
-        var config = Plugin.Instance!.Configuration;
-        string? title;
-
-        switch (config.PreferredLanguage)
-        {
-            case Language.English:
-                title = TitleEn;
-
-                if (!config.ForcePreferredLanguage && string.IsNullOrEmpty(title))
-                {
-                    title = TitleUa;
-                }
-
-                break;
-
-            case Language.Ukrainian:
-                title = TitleUa;
-
-                if (!config.ForcePreferredLanguage && string.IsNullOrEmpty(title))
-                {
-                    title = TitleEn;
-                }
-
-                break;
-
-            default:
-                title = TitleUa;
-                break;
-        }
-
-        return title;
     }
 
     public string? GetPreferredSynopsis()

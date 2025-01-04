@@ -6,5 +6,5 @@ public class Pagination
 
     public int Pages { get; set; }
 
-    public int Pagee { get; set; }
+    public int Page { get; set; }
 }
