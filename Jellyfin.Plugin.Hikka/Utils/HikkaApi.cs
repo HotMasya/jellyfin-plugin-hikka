@@ -47,7 +47,7 @@ public class HikkaApi
 
   private async Task<TResponse> MakeGetRequestAsync<TResponse>(string path, CancellationToken cancellationToken)
   {
-    var httpClient = Plugin.Instance.GetHttpClient();
+    var httpClient = Plugin.Instance!.GetHttpClient();
 
     using var response = await httpClient.GetAsync(BaseUrl + path, cancellationToken).ConfigureAwait(false);
 
@@ -69,7 +69,7 @@ public class HikkaApi
 
   private async Task<TResponse> MakePostRequestAsync<TResponse, TArgs>(string path, TArgs args, CancellationToken cancellationToken)
   {
-    var httpClient = Plugin.Instance.GetHttpClient();
+    var httpClient = Plugin.Instance!.GetHttpClient();
 
     using var content = new StringContent(JsonSerializer.Serialize(args, JsonOptions), Encoding.UTF8, "application/json");
     using var response = await httpClient.PostAsync(BaseUrl + path, content, cancellationToken).ConfigureAwait(false);

@@ -27,9 +27,9 @@ public class Novel : MediaBase, IBookConvertable
     {
         return new Book
         {
-            Name = TitleUa,
+            Name = GetPreferredTitle(),
             OriginalTitle = TitleOriginal,
-            Overview = SynopsisUa,
+            Overview = GetPreferredSynopsis(),
             ProductionYear = Year,
             PremiereDate = GetDate(StartDate),
             EndDate = GetDate(EndDate),

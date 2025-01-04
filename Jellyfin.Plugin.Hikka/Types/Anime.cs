@@ -42,7 +42,7 @@ public class Anime : MediaBase
         return null;
     }
 
-    private IEnumerable<string> GetCompanies()
+    private IEnumerable<string> GetCompanyNames()
     {
         if (Companies == null)
         {
@@ -56,9 +56,9 @@ public class Anime : MediaBase
     {
         return new Movie
         {
-            Name = TitleUa,
+            Name = GetPreferredTitle(),
             OriginalTitle = TitleJa,
-            Overview = SynopsisUa,
+            Overview = GetPreferredSynopsis(),
             ProductionYear = Year,
             PremiereDate = GetDate(StartDate),
             EndDate = GetDate(EndDate),
@@ -66,7 +66,7 @@ public class Anime : MediaBase
             Genres = [.. GetGenreNames()],
             // TODO: Do something with tags
             Tags = [],
-            Studios = [.. GetCompanies()],
+            Studios = [.. GetCompanyNames()],
             ProviderIds = new Dictionary<string, string> { { providerName, Slug } }
         };
     }
@@ -75,9 +75,9 @@ public class Anime : MediaBase
     {
         return new Series
         {
-            Name = TitleUa,
+            Name = GetPreferredTitle(),
             OriginalTitle = TitleJa,
-            Overview = SynopsisUa,
+            Overview = GetPreferredSynopsis(),
             ProductionYear = Year,
             PremiereDate = GetDate(StartDate),
             EndDate = GetDate(EndDate),
@@ -86,7 +86,7 @@ public class Anime : MediaBase
             Genres = [.. GetGenreNames()],
             // TODO: Do something with tags
             Tags = [],
-            Studios = [.. GetCompanies()],
+            Studios = [.. GetCompanyNames()],
             ProviderIds = new Dictionary<string, string> { { providerName, Slug } }
         };
     }

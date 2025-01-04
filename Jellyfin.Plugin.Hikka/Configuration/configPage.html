@@ -1,52 +1,66 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>Hikka Plugin Settings</title>
-</head>
-<body>
-    <div id="HikkaConfigPage" data-role="page" class="page type-interior pluginConfigurationPage" data-require="emby-input,emby-button,emby-select,emby-checkbox">
-        <div data-role="content">
-            <div class="content-primary">
-                <form id="HikkaConfigForm">
-                    <div class="selectContainer">
-                        <label class="selectLabel" for="PreferredLanguage">Бажана мова метаданих</label>
-                        <select is="emby-select" id="PreferredLanguage" name="PreferredLanguage" class="emby-select-withcolor emby-select">
-                            <option id="optOneOption" value="0">English</option>
-                            <option id="optAnotherOption" value="1">Українська</option>
-                        </select>
-                    </div>
-                </form>
+<html lang="ua">
+    <head>
+        <meta charset="utf-8" />
+        <title>Hikka Plugin Settings</title>
+    </head>
+    <body>
+        <div id="HikkaConfigPage" data-role="page" class="page type-interior pluginConfigurationPage" data-require="emby-input,emby-button,emby-select,emby-checkbox">
+            <div data-role="content">
+                <div class="content-primary">
+                    <form id="HikkaConfigForm">
+                        <div class="selectContainer">
+                            <label class="selectLabel" for="PreferredLanguage">Бажана мова метаданих</label>
+                            <select is="emby-select" id="PreferredLanguage" name="PreferredLanguage" class="emby-select-withcolor emby-select">
+                                <option id="optEnglish" value="English">English</option>
+                                <option id="optUkrainian" value="Ukrainian">Українська</option>
+                            </select>
+                            <div class="fieldDescription">У разі, якщо контент буде недоступним для обраної мови, буде завантажено контент альтернативною мовою.</div>
+                        </div>
+                        <div class="checkboxContainer checkboxContainer-withDescription">
+                            <label class="emby-checkbox-label">
+                                <input id="ForcePreferredLanguage" name="ForcePreferredLanguage" type="checkbox" is="emby-checkbox" />
+                                <span>Примусово використовувати бажану мову</span>
+                            </label>
+                        </div>
+                        <div>
+                            <button is="emby-button" type="submit" class="raised button-submit block emby-button">
+                                <span>Зберегти</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
-        </div>
-        <script type="text/javascript">
-            var TemplateConfig = {
-                pluginUniqueId: '96246472-1c95-4354-96b9-2398e8b03284'
-            };
+            <script type="text/javascript">
+                var HikkaConfig = {
+                    pluginUniqueId: "96246472-1c95-4354-96b9-2398e8b03284",
+                };
 
-            document.querySelector('#HikkaConfigPage')
-                .addEventListener('pageshow', function() {
+                document.querySelector("#HikkaConfigPage").addEventListener("pageshow", function () {
                     Dashboard.showLoadingMsg();
-                    ApiClient.getPluginConfiguration(TemplateConfig.pluginUniqueId).then(function (config) {
-                        document.querySelector('#PreferredLanguage').value = config.PreferredLanguage.ToString();
+                    ApiClient.getPluginConfiguration(HikkaConfig.pluginUniqueId).then(function (config) {
+                        document.querySelector("#PreferredLanguage").value = config.PreferredLanguage;
+                        document.querySelector("#ForcePreferredLanguage").checked = config.ForcePreferredLanguage;
+
                         Dashboard.hideLoadingMsg();
                     });
                 });
 
-            document.querySelector('#HikkaConfigForm')
-                .addEventListener('submit', function(e) {
-                Dashboard.showLoadingMsg();
-                ApiClient.getPluginConfiguration(TemplateConfig.pluginUniqueId).then(function (config) {
-                    config.PreferredLanguage = Number(document.querySelector('#Options').value);
-                    ApiClient.updatePluginConfiguration(TemplateConfig.pluginUniqueId, config).then(function (result) {
-                        Dashboard.processPluginConfigurationUpdateResult(result);
-                    });
-                });
+                document.querySelector("#HikkaConfigForm").addEventListener("submit", function (e) {
+                    Dashboard.showLoadingMsg();
+                    ApiClient.getPluginConfiguration(HikkaConfig.pluginUniqueId).then(function (config) {
+                        config.PreferredLanguage = document.querySelector("#PreferredLanguage").value;
+                        config.ForcePreferredLanguage = document.querySelector("#ForcePreferredLanguage").checked;
 
-                e.preventDefault();
-                return false;
-            });
-        </script>
-    </div>
-</body>
+                        ApiClient.updatePluginConfiguration(HikkaConfig.pluginUniqueId, config).then(function (result) {
+                            Dashboard.processPluginConfigurationUpdateResult(result);
+                        });
+                    });
+
+                    e.preventDefault();
+                    return false;
+                });
+            </script>
+        </div>
+    </body>
 </html>

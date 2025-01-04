@@ -26,7 +26,7 @@ public class HikkaAnimeImageProvider : IRemoteImageProvider
 
     public async Task<HttpResponseMessage> GetImageResponse(string url, CancellationToken cancellationToken)
     {
-        var httpClient = Plugin.Instance.GetHttpClient();
+        var httpClient = Plugin.Instance!.GetHttpClient();
         var response = await httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
 
         if (response.Content.Headers.ContentType == null)

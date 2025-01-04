@@ -1,13 +1,15 @@
+using System.Globalization;
 using System.Net.Http.Headers;
 using Jellyfin.Plugin.Hikka.Configuration;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Net;
 using MediaBrowser.Common.Plugins;
+using MediaBrowser.Model.Plugins;
 using MediaBrowser.Model.Serialization;
 
 namespace Jellyfin.Plugin.Hikka;
 
-public class Plugin : BasePlugin<PluginConfiguration>
+public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
 {
     private IHttpClientFactory _httpClientFactory;
 
@@ -23,9 +25,7 @@ public class Plugin : BasePlugin<PluginConfiguration>
 
     public override Guid Id => Guid.Parse(Constants.PluginGuid);
 
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
-    public static Plugin Instance { get; private set; }
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
+    public static Plugin? Instance { get; private set; }
 
     public HttpClient GetHttpClient()
     {
@@ -34,5 +34,17 @@ public class Plugin : BasePlugin<PluginConfiguration>
         new ProductInfoHeaderValue(Name, Version.ToString()));
 
         return httpClient;
+    }
+
+    public IEnumerable<PluginPageInfo> GetPages()
+    {
+        return
+        [
+            new PluginPageInfo
+            {
+                Name = Name,
+                EmbeddedResourcePath = string.Format(CultureInfo.InvariantCulture, "{0}.Configuration.configPage.html", GetType().Namespace)
+            }
+        ];
     }
 }
