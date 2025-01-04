@@ -6,9 +6,6 @@ namespace Jellyfin.Plugin.Hikka.Types.Abstract;
 
 public abstract class SearchResultBase
 {
-  [JsonConverter(typeof(ContentTypeJsonConverter))]
-  public required ContentType DataType { get; set; }
-
   [JsonConverter(typeof(MediaTypeJsonConverter))]
   public MediaType? MediaType { get; set; }
 

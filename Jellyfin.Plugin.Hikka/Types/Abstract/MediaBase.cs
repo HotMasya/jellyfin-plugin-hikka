@@ -20,9 +20,6 @@ public abstract class MediaBase
 
   public long Updated { get; set; }
 
-  [JsonConverter(typeof(ContentTypeJsonConverter))]
-  public required ContentType DataType { get; set; }
-
   public string? TitleUa { get; set; }
 
   public string? TitleEn { get; set; }

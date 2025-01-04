@@ -1,13 +1,7 @@
-using System.Text.Json.Serialization;
-using Jellyfin.Plugin.Hikka.Types.Enums;
-
 namespace Jellyfin.Plugin.Hikka.Types;
 
 public class Person
 {
-    [JsonConverter(typeof(ContentTypeJsonConverter))]
-    public required ContentType DataType { get; set; }
-
     public string? NameNative { get; set; }
 
     public string? NameUa { get; set; }
