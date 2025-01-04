@@ -1,3 +1,5 @@
 namespace Jellyfin.Plugin.Hikka.Types;
 
-public class MangaSearchArgs : NovelSearchArgs { }
+public class MangaSearchArgs : NovelSearchArgs
+{
+}

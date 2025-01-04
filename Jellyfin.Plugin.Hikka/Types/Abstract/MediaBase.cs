@@ -6,28 +6,47 @@ namespace Jellyfin.Plugin.Hikka.Types.Abstract;
 
 public abstract class MediaBase
 {
-  public string SynopsisEn { get; set; }
-  public string SynopsisUa { get; set; }
+  public string? SynopsisEn { get; set; }
+
+  public string? SynopsisUa { get; set; }
+
   public bool HasFranchise { get; set; }
+
   public bool TranslatedUa { get; set; }
+
   public long? StartDate { get; set; }
+
   public long? EndDate { get; set; }
+
   public long Updated { get; set; }
+
   [JsonConverter(typeof(ContentTypeJsonConverter))]
-  public ContentType DataType { get; set; }
-  public string TitleUa { get; set; }
-  public string TitleEn { get; set; }
-  public string Image { get; set; }
+  public required ContentType DataType { get; set; }
+
+  public string? TitleUa { get; set; }
+
+  public string? TitleEn { get; set; }
+
+  public string? Image { get; set; }
+
   public int? Year { get; set; }
+
   public int ScoredBy { get; set; }
+
   public float Score { get; set; }
-  public string Slug { get; set; }
-  [JsonConverter(typeof(ReleaseStatusJsonCoverter))]
-  public ReleaseStatus Status { get; set; }
+
+  public required string Slug { get; set; }
+
+  [JsonConverter(typeof(ReleaseStatusJsonConverter))]
+  public ReleaseStatus? Status { get; set; }
+
   [JsonConverter(typeof(MediaTypeJsonConverter))]
-  public MediaType MediaType { get; set; }
-  public Genre[] Genres { get; set; }
+  public MediaType? MediaType { get; set; }
+
+  public required IEnumerable<Genre> Genres { get; set; }
+
   public int MalId { get; set; }
+
   public bool Nsfw { get; set; }
 
   protected static DateTime UnixTimeToDateTime(long unixTime)
@@ -46,7 +65,7 @@ public abstract class MediaBase
     return null;
   }
 
-  protected IEnumerable<string> GetGenres()
+  protected IEnumerable<string?> GetGenreNames()
   {
     return Genres.Select((genre) => genre.NameUa);
   }

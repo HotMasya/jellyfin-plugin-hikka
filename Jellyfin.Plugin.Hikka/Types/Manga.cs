@@ -1,3 +1,5 @@
 namespace Jellyfin.Plugin.Hikka.Types;
 
-public class Manga: Novel {}
+public class Manga : Novel
+{
+}

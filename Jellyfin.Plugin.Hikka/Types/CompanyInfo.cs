@@ -3,13 +3,9 @@ using Jellyfin.Plugin.Hikka.Types.Enums;
 
 namespace Jellyfin.Plugin.Hikka.Types;
 
-public class Genre
+public class CompanyInfo
 {
-    public string? NameUa { get; set; }
-
-    public string? NameEn { get; set; }
-
-    public required string Slug { get; set; }
+    public required Company Company { get; set; }
 
     [JsonConverter(typeof(ContentTypeJsonConverter))]
     public required ContentType Type { get; set; }

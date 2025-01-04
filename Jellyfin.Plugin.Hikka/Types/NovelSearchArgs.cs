@@ -4,5 +4,5 @@ namespace Jellyfin.Plugin.Hikka.Types;
 
 public class NovelSearchArgs : SearchArgsBase
 {
-  public string[] Magazines { get; set; }
+    public IEnumerable<string>? Magazines { get; set; }
 }

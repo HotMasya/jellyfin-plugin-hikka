@@ -1,3 +1,5 @@
 namespace Jellyfin.Plugin.Hikka.Types;
 
-public class MangaSearchResult : NovelSearchResult { }
+public class MangaSearchResult : NovelSearchResult
+{
+}

@@ -3,11 +3,11 @@ using System.Text.Json.Serialization;
 
 namespace Jellyfin.Plugin.Hikka.Types.Abstract;
 
-public abstract class JsonArrayConverter<T> : JsonConverter<List<T>>
+public abstract class JsonArrayConverter<T> : JsonConverter<IEnumerable<T>>
 {
     private readonly JsonConverter<T> _elementConverter;
 
-    public JsonArrayConverter(JsonConverter<T> elementConverter)
+    protected JsonArrayConverter(JsonConverter<T> elementConverter)
     {
         _elementConverter = elementConverter;
     }
@@ -31,14 +31,20 @@ public abstract class JsonArrayConverter<T> : JsonConverter<List<T>>
             }
 
             // Deserialize each element using the provided element converter
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
             T element = _elementConverter.Read(ref reader, typeof(T), options);
-            list.Add(element);
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+
+            if (element != null)
+            {
+                list.Add(element);
+            }
         }
 
         return list;
     }
 
-    public override void Write(Utf8JsonWriter writer, List<T> value, JsonSerializerOptions options)
+    public override void Write(Utf8JsonWriter writer, IEnumerable<T> value, JsonSerializerOptions options)
     {
         writer.WriteStartArray();
 
