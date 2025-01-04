@@ -23,6 +23,6 @@ dotnet publish --configuration Release --output bin
 Для релізу цього плагіну ми рекомендуємо [JPRM](https://github.com/oddstr13/jellyfin-plugin-repository-manager) котрий збере цей плагін.
 Для отримання додаткової інформації про контекст і про те, як додати упакований zip-файл плагіна до маніфесту плагіна, див. [документація JPRM](https://github.com/oddstr13/jellyfin-plugin-repository-manager).
 
-## Licence
+## Ліцензія
 
 Код цього плагіна та пакунків поширюється на умовах ліцензії GPLv3. Дивіться [LICENSE](./LICENSE) для отримання додаткової інформації.
