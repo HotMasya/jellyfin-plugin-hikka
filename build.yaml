@@ -12,4 +12,7 @@ category: "Metadata"
 owner: "Hot Masya"
 artifacts:
   - "Jellyfin.Plugin.Hikka.dll"
-changelog: >
+changelog: |-
+  - Added metadata providers for anime series, movies, manga and novels;
+  - Added image providers for anime series, movies, manga and novels;
+  - Added metadata and image providers for staff and actors.
