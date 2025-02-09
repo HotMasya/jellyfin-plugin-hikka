@@ -16,12 +16,7 @@
 dotnet publish --configuration Release --output bin
 ```
 
-3. Перенесіть dll-файл до каталогу `plugins/hikka`, де встановлений Jellyfin. (Можливо вам треба буде створити ці каталоги)
-
-## Реліз
-
-Для релізу цього плагіну ми рекомендуємо [JPRM](https://github.com/oddstr13/jellyfin-plugin-repository-manager) котрий збере цей плагін.
-Для отримання додаткової інформації про контекст і про те, як додати упакований zip-файл плагіна до маніфесту плагіна, див. [документація JPRM](https://github.com/oddstr13/jellyfin-plugin-repository-manager).
+3. Перенесіть dll-файл та meta.json файл до каталогу `plugins/hikka`, де встановлений Jellyfin. (Можливо вам треба буде створити ці каталоги)
 
 ## Ліцензія
 
