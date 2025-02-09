@@ -3,22 +3,22 @@ using MediaBrowser.Controller.Providers;
 using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Providers;
 
-namespace Jellyfin.Plugin.Hikka.Providers.Hikka.NovelProviders;
+namespace Jellyfin.Plugin.Hikka.Providers.Hikka.PeopleProviders;
 
-public class HikkaNovelExternalId : IExternalId
+public class HikkaStaffExternalId : IExternalId
 {
     public string ProviderName
-        => ProviderNames.HikkaNovel;
+        => ProviderNames.HikkaPeople;
 
     public string Key
-        => ProviderNames.HikkaNovel;
+        => ProviderNames.HikkaPeople;
 
     public ExternalIdMediaType? Type
-        => ExternalIdMediaType.Book;
+        => ExternalIdMediaType.Person;
 
     public string UrlFormatString
-        => "https://hikka.io/novel/{0}";
+        => "https://hikka.io/people/{0}";
 
     public bool Supports(IHasProviderIds item)
-        => item is Book;
+        => item is Person;
 }

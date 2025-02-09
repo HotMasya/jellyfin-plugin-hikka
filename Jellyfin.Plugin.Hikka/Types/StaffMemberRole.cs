@@ -1,6 +1,8 @@
+using Jellyfin.Plugin.Hikka.Utils;
+
 namespace Jellyfin.Plugin.Hikka.Types;
 
-public class AuthorRole
+public class StaffMemberRole
 {
     public string? NameUa { get; set; }
 
@@ -9,4 +11,9 @@ public class AuthorRole
     public int? Weight { get; set; }
 
     public required string Slug { get; set; }
+
+    public string? GetPreferredName()
+    {
+        return LanguageUtils.GetPreferredStringValue(NameUa, NameEn);
+    }
 }

@@ -1,8 +1,8 @@
-using System.Net.Http.Headers;
 using Jellyfin.Plugin.Hikka.Types;
 using Jellyfin.Plugin.Hikka.Utils;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Providers;
+using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Providers;
 using Microsoft.Extensions.Logging;
 
@@ -26,26 +26,19 @@ public class HikkaMangaProvider : IRemoteMetadataProvider<Book, BookInfo>, IHasO
     public async Task<HttpResponseMessage> GetImageResponse(string url, CancellationToken cancellationToken)
     {
         var httpClient = Plugin.Instance!.GetHttpClient();
-        var response = await httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
-
-        if (response.Content.Headers.ContentType == null)
-        {
-            response.Content.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
-        }
-
-        return response;
+        return await httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<MetadataResult<Book>> GetMetadata(BookInfo info, CancellationToken cancellationToken)
     {
         var result = new MetadataResult<Book>();
         Manga? manga = null;
-        var mediaId = info.ProviderIds.GetOrDefault(Name);
+        var managaId = info.ProviderIds.GetOrDefault(Name);
 
-        if (!string.IsNullOrEmpty(mediaId))
+        if (!string.IsNullOrEmpty(managaId))
         {
-            _log.LogInformation("Media id \"{MediaId}\" found. Loading metadata.", mediaId);
-            manga = await _hikkaApi.GetMangaAsync(mediaId, cancellationToken).ConfigureAwait(false);
+            _log.LogInformation("Manga id \"{MediaId}\" found. Loading metadata.", managaId);
+            manga = await _hikkaApi.GetMangaAsync(managaId, cancellationToken).ConfigureAwait(false);
         }
         else
         {
@@ -66,6 +59,9 @@ public class HikkaMangaProvider : IRemoteMetadataProvider<Book, BookInfo>, IHasO
         {
             result.HasMetadata = true;
             result.Item = manga.ToBook(Name);
+            result.RemoteImages = [
+                new() { Url = SearchHelpers.PreprocessImageUrl(manga.Image), Type = ImageType.Primary },
+            ];
             result.Provider = Name;
         }
 

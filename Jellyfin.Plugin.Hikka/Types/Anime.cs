@@ -26,8 +26,8 @@ public class Anime : MediaBase
     public string? Season { get; set; }
 
     public IEnumerable<string>? Synonyms { get; set; }
-    // public List<object> Videos { get; set; }
     // TODO: Define data type
+    // public List<object> Videos { get; set; }
     // public List<object> Ost { get; set; }
     // public Object Stats { get; set; }
     // public List<object> Schedule { get; set; }

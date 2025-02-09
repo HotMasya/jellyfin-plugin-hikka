@@ -1,4 +1,3 @@
-using System.Net.Http.Headers;
 using Jellyfin.Plugin.Hikka.Types;
 using Jellyfin.Plugin.Hikka.Utils;
 using MediaBrowser.Controller.Providers;
@@ -29,14 +28,7 @@ public class HikkaEpisodeProvider : IRemoteMetadataProvider<JellyfinEpisode, Epi
     public async Task<HttpResponseMessage> GetImageResponse(string url, CancellationToken cancellationToken)
     {
         var httpClient = Plugin.Instance!.GetHttpClient();
-        var response = await httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
-
-        if (response.Content.Headers.ContentType == null)
-        {
-            response.Content.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
-        }
-
-        return response;
+        return await httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<MetadataResult<JellyfinEpisode>> GetMetadata(EpisodeInfo info, CancellationToken cancellationToken)
@@ -47,7 +39,7 @@ public class HikkaEpisodeProvider : IRemoteMetadataProvider<JellyfinEpisode, Epi
 
         if (!string.IsNullOrEmpty(seriesId))
         {
-            _log.LogInformation("Series id \"{MediaId}\" found. Loading episodes metadata.", seriesId);
+            _log.LogInformation("Series id \"{SeriesId}\" found. Loading episodes metadata.", seriesId);
             episodes = episodesCache.GetValueOrDefault(seriesId);
 
             if (episodes == null)

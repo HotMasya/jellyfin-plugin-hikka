@@ -28,4 +28,14 @@ public static class SearchHelpers
 
         return input;
     }
+
+    public static string? PreprocessImageUrl(string? url)
+    {
+        if (string.IsNullOrEmpty(url))
+        {
+            return null;
+        }
+
+        return Constants.ImageProxyUrl + url;
+    }
 }

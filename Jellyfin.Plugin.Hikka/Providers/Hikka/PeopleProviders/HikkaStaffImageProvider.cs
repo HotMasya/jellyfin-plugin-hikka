@@ -5,21 +5,21 @@ using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.Providers;
 using Microsoft.Extensions.Logging;
 
-namespace Jellyfin.Plugin.Hikka.Providers.Hikka.MangaProviders;
+namespace Jellyfin.Plugin.Hikka.Providers.Hikka.PeopleProviders;
 
-public class HikkaNovelImageProvider : IRemoteImageProvider
+public class HikkaStaffImageProvider : IRemoteImageProvider
 {
     private readonly ILogger _log;
 
     private readonly HikkaApi _hikkaApi;
 
-    public HikkaNovelImageProvider(ILogger<HikkaNovelImageProvider> logger)
+    public HikkaStaffImageProvider(ILogger<HikkaStaffImageProvider> logger)
     {
         _log = logger;
         _hikkaApi = new HikkaApi();
     }
 
-    public string Name { get; protected set; } = ProviderNames.HikkaNovel;
+    public string Name { get; protected set; } = ProviderNames.HikkaPeople;
 
     public async Task<HttpResponseMessage> GetImageResponse(string url, CancellationToken cancellationToken)
     {
@@ -29,21 +29,21 @@ public class HikkaNovelImageProvider : IRemoteImageProvider
 
     public async Task<IEnumerable<RemoteImageInfo>> GetImages(BaseItem item, CancellationToken cancellationToken)
     {
-        var mediaId = item.ProviderIds.GetOrDefault(Name);
+        var personId = item.ProviderIds.GetOrDefault(Name);
 
-        if (!string.IsNullOrEmpty(mediaId))
+        if (!string.IsNullOrEmpty(personId))
         {
-            _log.LogInformation("Loading images for book {MediaId}...", mediaId);
-            return await GetImagesForNovel(mediaId, cancellationToken).ConfigureAwait(false);
+            _log.LogInformation("Loading images for person {PersonId}...", personId);
+            return await GetImagesForPerson(personId, cancellationToken).ConfigureAwait(false);
         }
 
         return [];
     }
 
-    protected async Task<IEnumerable<RemoteImageInfo>> GetImagesForNovel(string mediaId, CancellationToken cancellationToken)
+    private async Task<IEnumerable<RemoteImageInfo>> GetImagesForPerson(string mediaId, CancellationToken cancellationToken)
     {
         var list = new List<RemoteImageInfo>();
-        var media = await _hikkaApi.GetNovelAsync(mediaId, cancellationToken).ConfigureAwait(false);
+        var media = await _hikkaApi.GetPersonAsync(mediaId, cancellationToken).ConfigureAwait(false);
 
         if (!string.IsNullOrEmpty(media.Image))
         {
@@ -63,5 +63,5 @@ public class HikkaNovelImageProvider : IRemoteImageProvider
         return [ImageType.Primary];
     }
 
-    public bool Supports(BaseItem item) => item is Book;
+    public bool Supports(BaseItem item) => item is Person;
 }

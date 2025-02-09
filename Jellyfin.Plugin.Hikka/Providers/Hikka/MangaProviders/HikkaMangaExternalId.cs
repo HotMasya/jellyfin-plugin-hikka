@@ -14,7 +14,7 @@ public class HikkaMangaExternalId : IExternalId
         => ProviderNames.HikkaManga;
 
     public ExternalIdMediaType? Type
-        => ExternalIdMediaType.Series;
+        => ExternalIdMediaType.Book;
 
     public string UrlFormatString
         => "https://hikka.io/manga/{0}";

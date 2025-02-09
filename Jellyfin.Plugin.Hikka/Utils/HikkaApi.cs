@@ -2,8 +2,11 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Jellyfin.Plugin.Hikka.Types;
+using Jellyfin.Plugin.Hikka.Types.Abstract;
 
 namespace Jellyfin.Plugin.Hikka.Utils;
+
+public delegate Task<PaginationResponse<T>> GetAllItemsQuery<T>(string slug, PaginationQuery query, CancellationToken cancellationToken);
 
 public class HikkaApi
 {
@@ -14,6 +17,33 @@ public class HikkaApi
         PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower,
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
     };
+
+    private async Task<IEnumerable<TData>> GetAllDataAsync<TData>(GetAllItemsQuery<TData> getAllItemsQuery, string slug, CancellationToken cancellationToken)
+    {
+        List<TData> data = [];
+
+        var query = new PaginationQuery
+        {
+            Page = 1,
+            Size = 100,
+        };
+
+        var searchResult = await getAllItemsQuery(slug, query, cancellationToken).ConfigureAwait(false);
+
+        if (searchResult.Pagination.Total > 0)
+        {
+            data.AddRange(searchResult.List);
+        }
+
+        while (searchResult.Pagination.Page < searchResult.Pagination.Total)
+        {
+            query.Page++;
+            searchResult = await getAllItemsQuery(slug, query, cancellationToken).ConfigureAwait(false);
+            data.AddRange(searchResult.List);
+        }
+
+        return data;
+    }
 
     public async Task<PaginationResponse<AnimeSearchResult>> SearchAnimeAsync(AnimeSearchArgs args, CancellationToken cancellationToken)
     {
@@ -39,29 +69,30 @@ public class HikkaApi
 
     public async Task<IEnumerable<Episode>> GetAllAnimeEpisodesAsync(string slug, CancellationToken cancellationToken)
     {
-        List<Episode> episodes = [];
+        return await GetAllDataAsync(GetAnimeEpisodesAsync, slug, cancellationToken).ConfigureAwait(false);
+        // List<Episode> episodes = [];
 
-        var query = new PaginationQuery
-        {
-            Page = 1,
-            Size = 100,
-        };
+        // var query = new PaginationQuery
+        // {
+        //     Page = 1,
+        //     Size = 100,
+        // };
 
-        var searchResult = await GetAnimeEpisodesAsync(slug, query, cancellationToken).ConfigureAwait(false);
+        // var searchResult = await GetAnimeEpisodesAsync(slug, query, cancellationToken).ConfigureAwait(false);
 
-        if (searchResult.Pagination.Total > 0)
-        {
-            episodes.AddRange(searchResult.List);
-        }
+        // if (searchResult.Pagination.Total > 0)
+        // {
+        //     episodes.AddRange(searchResult.List);
+        // }
 
-        while (searchResult.Pagination.Page < searchResult.Pagination.Total)
-        {
-            query.Page++;
-            searchResult = await GetAnimeEpisodesAsync(slug, query, cancellationToken).ConfigureAwait(false);
-            episodes.AddRange(searchResult.List);
-        }
+        // while (searchResult.Pagination.Page < searchResult.Pagination.Total)
+        // {
+        //     query.Page++;
+        //     searchResult = await GetAnimeEpisodesAsync(slug, query, cancellationToken).ConfigureAwait(false);
+        //     episodes.AddRange(searchResult.List);
+        // }
 
-        return episodes;
+        // return episodes;
     }
 
     public async Task<PaginationResponse<MangaSearchResult>> SearchMangaAsync(MangaSearchArgs args, CancellationToken cancellationToken)
@@ -82,6 +113,33 @@ public class HikkaApi
     public async Task<Novel> GetNovelAsync(string slug, CancellationToken cancellationToken)
     {
         return await MakeGetRequestAsync<Novel>($"/novel/{slug}", cancellationToken).ConfigureAwait(false);
+    }
+
+    public async Task<PaginationResponse<Person>> SearchPeopleAsync(SearchArgsBase args, CancellationToken cancellationToken)
+    {
+        return await MakePostRequestAsync<PaginationResponse<Person>, SearchArgsBase>("/people", args, cancellationToken).ConfigureAwait(false);
+    }
+
+    public async Task<Person> GetPersonAsync(string slug, CancellationToken cancellationToken)
+    {
+        return await MakeGetRequestAsync<Person>($"/people/{slug}", cancellationToken).ConfigureAwait(false);
+    }
+
+    public async Task<PaginationResponse<StaffMember>> GetAnimeStaffMembers(string slug, PaginationQuery? query, CancellationToken cancellationToken)
+    {
+        string queryString = string.Empty;
+
+        if (query != null)
+        {
+            queryString = $"size={query.Size}&page={query.Page}";
+        }
+
+        return await MakeGetRequestAsync<PaginationResponse<StaffMember>>($"/anime/{slug}/staff?{queryString}", cancellationToken).ConfigureAwait(false);
+    }
+
+    public async Task<IEnumerable<StaffMember>> GetAllAnimeStaffMembers(string slug, CancellationToken cancellationToken)
+    {
+        return await GetAllDataAsync(GetAnimeStaffMembers, slug, cancellationToken).ConfigureAwait(false);
     }
 
     private async Task<TResponse> MakeGetRequestAsync<TResponse>(string path, CancellationToken cancellationToken)

@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using Jellyfin.Plugin.Hikka.Types.Enums;
+using Jellyfin.Plugin.Hikka.Utils;
 using MediaBrowser.Model.Providers;
 
 namespace Jellyfin.Plugin.Hikka.Types.Abstract;
@@ -67,9 +68,9 @@ public abstract class MediaBase : MediaWithTitle
     {
         return new RemoteSearchResult
         {
-            Name = TitleUa,
+            Name = GetPreferredTitle(),
             ProductionYear = Year,
-            ImageUrl = Image,
+            ImageUrl = SearchHelpers.PreprocessImageUrl(Image),
             SearchProviderName = providerName,
             ProviderIds = new Dictionary<string, string> { { providerName, Slug } }
         };
@@ -77,36 +78,6 @@ public abstract class MediaBase : MediaWithTitle
 
     public string? GetPreferredSynopsis()
     {
-        var config = Plugin.Instance!.Configuration;
-        string? title;
-
-        switch (config.PreferredLanguage)
-        {
-            case Language.English:
-                title = SynopsisEn;
-
-                if (!config.ForcePreferredLanguage && string.IsNullOrEmpty(title))
-                {
-                    title = SynopsisUa;
-                }
-
-                break;
-
-            case Language.Ukrainian:
-                title = SynopsisUa;
-
-                if (!config.ForcePreferredLanguage && string.IsNullOrEmpty(title))
-                {
-                    title = SynopsisEn;
-                }
-
-                break;
-
-            default:
-                title = SynopsisUa;
-                break;
-        }
-
-        return title;
+        return LanguageUtils.GetPreferredStringValue(SynopsisUa, SynopsisEn);
     }
 }

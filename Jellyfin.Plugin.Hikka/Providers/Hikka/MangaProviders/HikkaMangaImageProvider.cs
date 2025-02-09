@@ -1,4 +1,3 @@
-using System.Net.Http.Headers;
 using Jellyfin.Plugin.Hikka.Utils;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Providers;
@@ -25,14 +24,7 @@ public class HikkaMangaImageProvider : IRemoteImageProvider
     public async Task<HttpResponseMessage> GetImageResponse(string url, CancellationToken cancellationToken)
     {
         var httpClient = Plugin.Instance!.GetHttpClient();
-        var response = await httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
-
-        if (response.Content.Headers.ContentType == null)
-        {
-            response.Content.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
-        }
-
-        return response;
+        return await httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<IEnumerable<RemoteImageInfo>> GetImages(BaseItem item, CancellationToken cancellationToken)
@@ -59,7 +51,7 @@ public class HikkaMangaImageProvider : IRemoteImageProvider
             {
                 ProviderName = Name,
                 Type = ImageType.Primary,
-                Url = media.Image
+                Url = SearchHelpers.PreprocessImageUrl(media.Image)
             });
         }
 

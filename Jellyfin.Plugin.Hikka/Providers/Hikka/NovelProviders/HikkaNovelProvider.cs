@@ -1,4 +1,3 @@
-using System.Net.Http.Headers;
 using Jellyfin.Plugin.Hikka.Types;
 using Jellyfin.Plugin.Hikka.Utils;
 using MediaBrowser.Controller.Entities;
@@ -26,26 +25,19 @@ public class HikkaNovelProvider : IRemoteMetadataProvider<Book, BookInfo>, IHasO
     public async Task<HttpResponseMessage> GetImageResponse(string url, CancellationToken cancellationToken)
     {
         var httpClient = Plugin.Instance!.GetHttpClient();
-        var response = await httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
-
-        if (response.Content.Headers.ContentType == null)
-        {
-            response.Content.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
-        }
-
-        return response;
+        return await httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<MetadataResult<Book>> GetMetadata(BookInfo info, CancellationToken cancellationToken)
     {
         var result = new MetadataResult<Book>();
         Novel? novel = null;
-        var mediaId = info.ProviderIds.GetOrDefault(Name);
+        var novelId = info.ProviderIds.GetOrDefault(Name);
 
-        if (!string.IsNullOrEmpty(mediaId))
+        if (!string.IsNullOrEmpty(novelId))
         {
-            _log.LogInformation("Media id \"{MediaId}\" found. Loading metadata.", mediaId);
-            novel = await _hikkaApi.GetNovelAsync(mediaId, cancellationToken).ConfigureAwait(false);
+            _log.LogInformation("Novel id \"{NovelId}\" found. Loading metadata.", novelId);
+            novel = await _hikkaApi.GetNovelAsync(novelId, cancellationToken).ConfigureAwait(false);
         }
         else
         {
@@ -76,12 +68,12 @@ public class HikkaNovelProvider : IRemoteMetadataProvider<Book, BookInfo>, IHasO
     {
         var results = new List<RemoteSearchResult>();
 
-        var mediaId = searchInfo.ProviderIds.GetOrDefault(Name);
+        var novelId = searchInfo.ProviderIds.GetOrDefault(Name);
 
-        if (!string.IsNullOrEmpty(mediaId))
+        if (!string.IsNullOrEmpty(novelId))
         {
-            _log.LogInformation("Media id \"{MediaId}\" found. Loading metadata.", mediaId);
-            var novel = await _hikkaApi.GetNovelAsync(mediaId, cancellationToken).ConfigureAwait(false);
+            _log.LogInformation("Novel id \"{MediaId}\" found. Loading metadata.", novelId);
+            var novel = await _hikkaApi.GetNovelAsync(novelId, cancellationToken).ConfigureAwait(false);
 
             if (novel != null)
             {

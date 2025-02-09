@@ -5,7 +5,7 @@ namespace Jellyfin.Plugin.Hikka.Types;
 
 public class Novel : MediaBase, IBookConvertable
 {
-    public required IEnumerable<Author> Authors { get; set; }
+    public required IEnumerable<StaffMember> Authors { get; set; }
 
     public required IEnumerable<Magazine> Magazines { get; set; }
 

@@ -1,4 +1,3 @@
-using System.Net.Http.Headers;
 using Jellyfin.Plugin.Hikka.Utils;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Entities.Movies;
@@ -27,19 +26,13 @@ public class HikkaAnimeImageProvider : IRemoteImageProvider
     public async Task<HttpResponseMessage> GetImageResponse(string url, CancellationToken cancellationToken)
     {
         var httpClient = Plugin.Instance!.GetHttpClient();
-        var response = await httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
-
-        if (response.Content.Headers.ContentType == null)
-        {
-            response.Content.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
-        }
-
-        return response;
+        return await httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<IEnumerable<RemoteImageInfo>> GetImages(BaseItem item, CancellationToken cancellationToken)
     {
         var mediaId = item.ProviderIds.GetOrDefault(Name);
+
         if (!string.IsNullOrEmpty(mediaId))
         {
             switch (item)
@@ -68,7 +61,7 @@ public class HikkaAnimeImageProvider : IRemoteImageProvider
             {
                 ProviderName = Name,
                 Type = ImageType.Primary,
-                Url = media.Image
+                Url = SearchHelpers.PreprocessImageUrl(media.Image),
             });
         }
 
@@ -80,5 +73,5 @@ public class HikkaAnimeImageProvider : IRemoteImageProvider
         return [ImageType.Primary];
     }
 
-    public bool Supports(BaseItem item) => item is Series || item is Season || item is Movie;
+    public bool Supports(BaseItem item) => item is Series || item is Movie;
 }

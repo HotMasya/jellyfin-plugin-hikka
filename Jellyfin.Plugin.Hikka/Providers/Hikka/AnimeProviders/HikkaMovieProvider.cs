@@ -1,4 +1,3 @@
-using System.Net.Http.Headers;
 using Jellyfin.Plugin.Hikka.Types;
 using Jellyfin.Plugin.Hikka.Utils;
 using MediaBrowser.Controller.Entities.Movies;
@@ -26,26 +25,19 @@ public class HikkaMovieProvider : IRemoteMetadataProvider<Movie, MovieInfo>, IHa
     public async Task<HttpResponseMessage> GetImageResponse(string url, CancellationToken cancellationToken)
     {
         var httpClient = Plugin.Instance!.GetHttpClient();
-        var response = await httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
-
-        if (response.Content.Headers.ContentType == null)
-        {
-            response.Content.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
-        }
-
-        return response;
+        return await httpClient.GetAsync(url, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<MetadataResult<Movie>> GetMetadata(MovieInfo info, CancellationToken cancellationToken)
     {
         var result = new MetadataResult<Movie>();
-        Anime? media = null;
-        var mediaId = info.ProviderIds.GetOrDefault(Name);
+        Anime? animeMovie = null;
+        var animeMovieId = info.ProviderIds.GetOrDefault(Name);
 
-        if (!string.IsNullOrEmpty(mediaId))
+        if (!string.IsNullOrEmpty(animeMovieId))
         {
-            _log.LogInformation("Media id \"{MediaId}\" found. Loading metadata.", mediaId);
-            media = await _hikkaApi.GetAnimeAsync(mediaId, cancellationToken).ConfigureAwait(false);
+            _log.LogInformation("Anime movie id \"{AnimeMovieId}\" found. Loading metadata.", animeMovieId);
+            animeMovie = await _hikkaApi.GetAnimeAsync(animeMovieId, cancellationToken).ConfigureAwait(false);
         }
         else
         {
@@ -57,15 +49,18 @@ public class HikkaMovieProvider : IRemoteMetadataProvider<Movie, MovieInfo>, IHa
             if (searchResults.Pagination.Total > 0)
             {
                 var primaryResult = searchResults.List.First();
-                _log.LogInformation("Found series metadata for \"{ResultName}\"", primaryResult.TitleUa);
-                media = await _hikkaApi.GetAnimeAsync(primaryResult.Slug, cancellationToken).ConfigureAwait(false);
+                _log.LogInformation("Found anime movie metadata for \"{ResultName}\"", primaryResult.TitleUa);
+                animeMovie = await _hikkaApi.GetAnimeAsync(primaryResult.Slug, cancellationToken).ConfigureAwait(false);
             }
         }
 
-        if (media != null)
+        if (animeMovie != null)
         {
+            var staffMembers = await _hikkaApi.GetAllAnimeStaffMembers(animeMovie.Slug, cancellationToken).ConfigureAwait(false);
+
             result.HasMetadata = true;
-            result.Item = media.ToMovie(Name);
+            result.Item = animeMovie.ToMovie(Name);
+            result.People = staffMembers.Select((member) => member.ToPersonInfo(ProviderNames.HikkaPeople)).ToList();
             result.Provider = Name;
         }
 
@@ -76,16 +71,16 @@ public class HikkaMovieProvider : IRemoteMetadataProvider<Movie, MovieInfo>, IHa
     {
         var results = new List<RemoteSearchResult>();
 
-        var mediaId = searchInfo.ProviderIds.GetOrDefault(Name);
+        var animeMovieId = searchInfo.ProviderIds.GetOrDefault(Name);
 
-        if (!string.IsNullOrEmpty(mediaId))
+        if (!string.IsNullOrEmpty(animeMovieId))
         {
-            _log.LogInformation("Media id \"{MediaId}\" found. Loading metadata.", mediaId);
-            var media = await _hikkaApi.GetAnimeAsync(mediaId, cancellationToken).ConfigureAwait(false);
+            _log.LogInformation("Media id \"{MediaId}\" found. Loading metadata.", animeMovieId);
+            var animeMovie = await _hikkaApi.GetAnimeAsync(animeMovieId, cancellationToken).ConfigureAwait(false);
 
-            if (media != null)
+            if (animeMovie != null)
             {
-                results.Add(media.ToSearchResult(Name));
+                results.Add(animeMovie.ToSearchResult(Name));
             }
         }
 
