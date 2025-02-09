@@ -33,6 +33,7 @@ jobs:
         with:
           upload_url: ${{ github.event.release.upload_url }}
           asset_path: ./*
+          github_token: ${{ secrets.GITHUB_TOKEN }}
   generate:
     runs-on: ubuntu-latest
     needs:
