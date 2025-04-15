@@ -21,3 +21,4 @@ dotnet publish --configuration Release --output bin
 ## Ліцензія
 
 Код цього плагіна та пакунків поширюється на умовах ліцензії GPLv3. Дивіться [LICENSE](./LICENSE) для отримання додаткової інформації.
+
