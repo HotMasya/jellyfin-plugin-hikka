@@ -16,9 +16,6 @@ public class HikkaNovelExternalId : IExternalId
     public ExternalIdMediaType? Type
         => ExternalIdMediaType.Book;
 
-    public string UrlFormatString
-        => "https://hikka.io/novel/{0}";
-
     public bool Supports(IHasProviderIds item)
         => item is Book;
 }

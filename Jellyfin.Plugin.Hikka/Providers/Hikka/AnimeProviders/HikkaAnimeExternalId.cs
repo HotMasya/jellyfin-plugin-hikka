@@ -17,9 +17,6 @@ public class HikkaAnimeExternalId : IExternalId
     public ExternalIdMediaType? Type
         => ExternalIdMediaType.Series;
 
-    public string UrlFormatString
-        => "https://hikka.io/anime/{0}";
-
     public bool Supports(IHasProviderIds item)
         => item is Series || item is Movie;
 }

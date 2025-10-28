@@ -16,9 +16,6 @@ public class HikkaStaffExternalId : IExternalId
     public ExternalIdMediaType? Type
         => ExternalIdMediaType.Person;
 
-    public string UrlFormatString
-        => "https://hikka.io/people/{0}";
-
     public bool Supports(IHasProviderIds item)
         => item is Person;
 }
