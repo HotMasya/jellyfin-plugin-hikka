@@ -2,8 +2,8 @@
 name: "Hikka"
 guid: "96246472-1c95-4354-96b9-2398e8b03284"
 version: "1.0.1.0"
-targetAbi: "10.10.6.0"
-framework: "net8.0"
+targetAbi: "10.11.0.0"
+framework: "net9.0"
 overview: "Ukrainian metadata and image provider for anime, manga and novels."
 description: >
   Ukrainian metadata and image provider for anime, manga and novels.
@@ -13,4 +13,4 @@ owner: "Hot Masya"
 artifacts:
   - "Jellyfin.Plugin.Hikka.dll"
 changelog: >
-  - (#2) Fixed issue when user was unable to change metadata through either editor or modal
+  - (#3) Updated library to the latest version
