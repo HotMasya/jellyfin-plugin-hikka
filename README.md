@@ -8,7 +8,7 @@
 
 ## Збірка
 
-1. Для збірки плагіна вам знадобиться [.NET 8.x](https://dotnet.microsoft.com/download/dotnet/8.0).
+1. Для збірки плагіна вам знадобиться [.NET 9.0](https://dotnet.microsoft.com/download/dotnet/9.0).
 
 2. Зібрати плагін можна наступною командою
 
