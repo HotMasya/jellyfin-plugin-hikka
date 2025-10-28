@@ -1,7 +1,7 @@
 ---
 name: "Hikka"
 guid: "96246472-1c95-4354-96b9-2398e8b03284"
-version: "1.0.1.0"
+version: "1.0.2.0"
 targetAbi: "10.11.0.0"
 framework: "net9.0"
 overview: "Ukrainian metadata and image provider for anime, manga and novels."
